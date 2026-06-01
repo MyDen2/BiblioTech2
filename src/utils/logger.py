@@ -1,5 +1,4 @@
 import logging
-from datetime import datetime 
 
 # -----------------------------------------------------------------------------
 # La bibliothèque "logging"
@@ -32,10 +31,12 @@ def setup_logger(name, log_file=None, level=logging.INFO):
     # Définition du format des messages :
     # - %(asctime)s : date/heure
     # - %(name)s : nom du logger
+    # - %(filename)s : nom du fichier
+    # - %(lineno)d : ligne du fichier
     # - %(levelname)s : niveau du message
     # - %(message)s : texte du message
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        '%(asctime)s - %(name)s - %(filename)s:%(lineno)d - %(levelname)s - %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S'
     )
 

@@ -72,6 +72,7 @@ CREATE TABLE IF NOT EXISTS bibliotech.users (
 
 CREATE TABLE IF NOT EXISTS bibliotech.books (
     book_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    isbn VARCHAR(20) UNIQUE,
     title VARCHAR(150) NOT NULL,
     summary TEXT NOT NULL,
     release_year INT NOT NULL,
