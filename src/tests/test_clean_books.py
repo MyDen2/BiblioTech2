@@ -5,8 +5,27 @@ df = read_parquet_from_s3(
     "books_clean.parquet"
 )
 
-print(df.head())
+# print(df.head())
 
-print(df.shape)
+# print(df.shape)
 
-print(df.dtypes)
+# print(df.dtypes)
+
+duplicates = (
+    df.groupby(
+        [
+            "isbn",
+            "title",
+            "authors",
+            "release_year"
+        ]
+    )
+    .size()
+    .reset_index(name="count")
+)
+
+print(
+    duplicates[
+        duplicates["count"] > 1
+    ]
+)

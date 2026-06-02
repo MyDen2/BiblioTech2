@@ -29,6 +29,22 @@ COLUMN_MAPPING = {
     "pagesNumber": "number_pages",
 }
 
+def normalize_key(value):
+
+    if pd.isna(value):
+        return None
+
+    value = str(value)
+
+    value = value.strip()
+
+    value = re.sub(
+        r"\s+",
+        " ",
+        value
+    )
+
+    return value.lower()
 
 def clean_text(value):
     if pd.isna(value):
@@ -108,6 +124,16 @@ def clean_books(df: pd.DataFrame) -> pd.DataFrame:
     df = df[df["title"] != "Unknown"]
     df = df[df["number_pages"] > 0]
 
+    df["title_key"] = (
+        df["title"]
+        .apply(normalize_key)
+    )
+
+    df["authors_key"] = (
+        df["authors"]
+        .apply(normalize_key)
+    )
+
     logger.info("Removing duplicates")
 
     df_with_isbn = df[df["isbn"].notna()].drop_duplicates(
@@ -115,14 +141,31 @@ def clean_books(df: pd.DataFrame) -> pd.DataFrame:
         keep="last"
     )
 
-    df_without_isbn = df[df["isbn"].isna()].drop_duplicates(
-        subset=["title", "authors", "release_year"],
-        keep="last"
+    df_without_isbn = (
+        df[
+            df["isbn"].isna()
+        ]
+        .drop_duplicates(
+            subset=[
+                "title_key",
+                "authors_key",
+                "release_year"
+            ],
+            keep="last"
+        )
     )
 
     df = pd.concat(
         [df_with_isbn, df_without_isbn],
         ignore_index=True
+    )
+
+    df = df.drop(
+        columns=[
+            "title_key",
+            "authors_key"
+        ],
+        errors="ignore"
     )
 
     logger.info(f"Final shape: {df.shape}")
