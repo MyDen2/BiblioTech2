@@ -12,7 +12,7 @@ GOLD_BUCKET = "gold"
 INPUT_KEY = "book_popularity.parquet"
 OUTPUT_KEY = "books_to_enrich.parquet"
 
-TOP_N = 5000
+TOP_N = 1000
 
 
 def main() -> None:
@@ -27,12 +27,41 @@ def main() -> None:
 
     selected = (
         df[df["isbn"].notna()]
-        .sort_values(
-            by=["weighted_score", "ratings_count"],
-            ascending=[False, False]
+
+        .assign(
+            title_key=lambda x:
+            (
+                x["title"]
+                .str.lower()
+                .str.strip()
+            )
         )
+
+        .sort_values(
+            by=[
+                "weighted_score",
+                "ratings_count"
+            ],
+            ascending=[
+                False,
+                False
+            ]
+        )
+
+        .drop_duplicates(
+            subset=["title_key"],
+            keep="first"
+        )
+
+        .drop(
+            columns=["title_key"]
+        )
+
         .head(TOP_N)
-        .reset_index(drop=True)
+
+        .reset_index(
+            drop=True
+        )
     )
 
     logger.info(f"Selected books: {selected.shape}")

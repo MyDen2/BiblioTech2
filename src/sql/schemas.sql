@@ -156,7 +156,7 @@ CREATE EXTENSION IF NOT EXISTS vector;
 
 CREATE TABLE IF NOT EXISTS bibliotech.book_embeddings (
     book_id INT PRIMARY KEY,
-    vector VECTOR(1536) NOT NULL,
+    vector VECTOR(384) NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (book_id) REFERENCES bibliotech.books(book_id) ON DELETE CASCADE
 );
