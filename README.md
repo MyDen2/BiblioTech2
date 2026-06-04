@@ -51,3 +51,6 @@ python -m src.etl.transformers.build_user_profiles
 python -m src.database.load_books_to_postgres
 python -m src.etl.transformers.select_books_to_enrich
 python -m src.enrichment.enrich_books_metadata
+
+
+python -m src.recommendation.build_book_embeddings
